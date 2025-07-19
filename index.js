@@ -2,6 +2,7 @@ const { Server } = require('socket.io')
 const { randomBytes } = require('crypto')
 const { createGzip, createGunzip } = require('zlib')
 const fs = require('fs')
+const cors = require('cors');
 const express = require('express')
 const path = require('path')
 const { finished } = require('stream/promises');
@@ -53,6 +54,7 @@ if (!process.env.port) {
   process.env.port = 8880
 }
 
+
 if (process.env.useHTTPS === true) {
   if (!process.env.httpsCert) return console.log('[Error] useHTTPS is set to true but the certificate path is missing');
   if (!process.env.httpsKey) return console.log('[Error] useHTTPS is set to true but the certificate key path is missing');
@@ -65,6 +67,32 @@ if (process.env.useHTTPS === true) {
   const { createServer } = require('http')
   server = createServer(app);
 }
+
+const protocol = process.env.useHTTPS === 'true' ? 'https://' : 'http://';
+let CORSOriginArray = [];
+
+if (!process.env.FQDN) {
+  console.log("[Warning] FQDN wasn't provided using default one.")
+  process.env.FQDN = 'protoshock.mewo.gay';
+   if (process.env.debugType === 3) {
+    console.log(`[Server] FQDN was set to default: ${process.env.FQDN}`);
+  }
+}
+
+// Generate CORS origins based on the FQDN and port
+ CORSOriginArray.push(protocol + process.env.FQDN + ':' + process.env.port, protocol + process.env.FQDN);
+if(process.env.debugType === '3') {
+  console.log(`[Server] CORS origins set to: ${CORSOriginArray.join(', ')}`);
+}
+
+// Configure CORS for the express instance
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.FQDN
+    : ['http://localhost:' + process.env.port, 'http://127.0.0.1:' + process.env.port],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
+  credentials: true
+}));
 
 app.use('/assets', express.static(path.join(__dirname, '/assets')));
 app.get('/', (req, res) => {
@@ -443,7 +471,15 @@ function startInterval() {
 const wss = new Server(server, {
   transports: ['websocket', 'polling'],
   maxHttpBufferSize: 10e8,
-  pingTimeout: 60000
+  pingTimeout: 60000,
+  // CORS configuration
+  cors: {
+    origin: process.env.NODE_ENV === 'production'
+      ? process.env.FQDN
+      : [protocol + 'localhost:' + process.env.port, protocol + '127.0.0.1:' + process.env.port],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
+    credentials: true
+  }
 });
 
 setInterval(() => {
@@ -514,7 +550,7 @@ wss.on('connection', (ws) => {
         return;
       }
 
-      if (stats.size > 10 * 1024 * 1024){
+      if (stats.size > 10 * 1024 * 1024) {
         console.error('[Error] Server Icon exceeds 10 MB');
         gzip.write({ serverIcon: false });
         gzip.end()

@@ -1,3 +1,6 @@
+# Rewriting this soon, dont use.
+
+
 # Protoshock Server Files
 This repository contains the files to run a Protoshock game server.
 You can either run it directly if you clone this repo or use Docker.

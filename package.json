@@ -1,7 +1,7 @@
 {
   "name": "protoshock-server",
   "description": "This repository contains the necessary files to run a Protoshock server instance.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: No test specified\" && exit 1",
@@ -9,21 +9,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/protoshock/Server-Files.git"
+    "url": "git+https://github.com/xwxfox/protoshock-server.git"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "sharp": "^0.34.3",
     "socket.io": "^4.7.2"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",
     "utf-8-validate": "^5.0.10"
   },
-  "author": "BracketProto",
+  "author": "xwxfox",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/protoshock/Server-Files/issues"
+    "url": "https://github.com/xwxfox/protoshock-server/issues"
   },
-  "homepage": "https://github.com/protoshock/Server-Files#readme"
+  "homepage": "https://github.com/xwxfox/protoshock-server#readme"
 }
