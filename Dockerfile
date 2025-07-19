@@ -1,7 +1,7 @@
 FROM node:iron-alpine3.20
 WORKDIR /usr/src/app
 RUN apk --no-cache add git
-RUN git clone https://github.com/protoshock/Server-Files.git .
+RUN git clone https://github.com/xwxfox/protoshock-server.git .
 RUN npm install
 RUN npm install sharp
 ARG EXPOSE_GC=false
