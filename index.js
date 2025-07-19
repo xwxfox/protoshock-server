@@ -68,7 +68,12 @@ if (process.env.useHTTPS === true) {
   server = createServer(app);
 }
 
-const protocol = process.env.useHTTPS === 'true' ? 'https://' : 'http://';
+let protocol = process.env.useHTTPS === 'true' ? 'https://' : 'http://';
+if(process.env.useHTTPSInCORSOrigin === 'true') {
+  protocol = 'https://';
+} else if (process.env.useHTTPSInCORSOrigin === 'false') {
+  protocol = 'http://';
+}
 let CORSOriginArray = [];
 
 if (!process.env.FQDN) {
